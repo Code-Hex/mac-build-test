@@ -1,0 +1,33 @@
+name: Build
+on:
+  push:
+    branches:
+    - "main"
+  pull_request: {}
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+        - macOS-11
+        go:
+        - 1.17
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - name: Setup Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: ${{ matrix.go }}
+      - run: mkdir -p out
+      - name: Build
+        run: go build -o ./out/test .
+      - name: Build ARM64
+        run: GOARCH=arm64 go build -o ./out/test-arm .
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: binary (${{ matrix.os }})
+          path: "./out"

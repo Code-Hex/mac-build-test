@@ -26,6 +26,8 @@ jobs:
         run: go build -o ./out/test .
       - name: Build ARM64
         run: CGO_ENABLED=1 GOOS=darwin GOARCH=arm64 go build -o ./out/test-arm .
+      - name: Run test
+        run: ./out/test
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
